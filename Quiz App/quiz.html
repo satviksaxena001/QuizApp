@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quiz App</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+    .quiz-container {
+      max-width: 500px;
+      margin: 0 auto;
+    }
+    .question {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .submit-btn {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <h2>Quiz App</h2>
+    <div id="quiz"></div>
+    <button class="btn btn-primary submit-btn">Submit</button>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script>
+    // Quiz Data
+    var quizData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Rome", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "Which planet is known as the Red Planet?",
+        options: ["Mars", "Venus", "Jupiter", "Saturn"],
+        answer: "Mars"
+      },
+      {
+        question: "What is the largest ocean in the world?",
+        options: ["Pacific Ocean", "Atlantic Ocean", "Indian Ocean", "Arctic Ocean"],
+        answer: "Pacific Ocean"
+      }
+    ];
+
+    // Generate quiz HTML
+    function generateQuiz() {
+      var quizContainer = document.getElementById("quiz");
+      var output = "";
+
+      quizData.forEach(function (question, index) {
+        var options = "";
+        question.options.forEach(function (option) {
+          options += `<label>
+                        <input type="radio" name="question-${index}" value="${option}">
+                        ${option}
+                      </label>`;
+        });
+
+        output += `<div class="question">${index + 1}. ${question.question}</div>
+                   <div class="options">${options}</div>`;
+      });
+
+      quizContainer.innerHTML = output;
+    }
+
+    // Calculate quiz results
+    function calculateResults() {
+      var score = 0;
+
+      quizData.forEach(function (question, index) {
+        var selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+        if (selectedOption && selectedOption.value === question.answer) {
+          score++;
+        }
+      });
+
+      var totalQuestions = quizData.length;
+      var percentage = (score / totalQuestions) * 100;
+
+      Swal.fire({
+        title: "Quiz Results",
+        text: `You scored ${score} out of ${totalQuestions} (${percentage}%)`,
+        icon: "success",
+        confirmButtonText: "OK"
+      });
+    }
+
+    // Generate quiz on page load
+    document.addEventListener("DOMContentLoaded", function () {
+      generateQuiz();
+    });
+
+    // Submit quiz
+    var submitBtn = document.querySelector(".submit-btn");
+    submitBtn.addEventListener("click", function () {
+      calculateResults();
+    });
+  </script>
+</body>
+</html>
